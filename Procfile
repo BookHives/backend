@@ -1,0 +1,1 @@
+web: gunicorn CST438.wsgi
