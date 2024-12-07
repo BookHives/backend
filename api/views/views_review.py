@@ -40,15 +40,18 @@ def get_user_reviews(request, user_id):
 def create_review(request):
     """Create a new review"""
     try:
-        # Validate that book and user exist
-        book = get_object_or_404(Book, pk=request.data.get('book_id'))
-        user = get_object_or_404(User, pk=request.data.get('user_id'))
+        data = {
+            'user_id': request.data.get('user_id'),
+            'book_id': request.data.get('book_id'),
+            'rating': request.data.get('rating'),
+            'review_text': request.data.get('review_text'),
+        }
         
         # Check if user has already reviewed this book
         existing_review = Review.objects.filter(
-            user_id=user.user_id,
-            book_id=book.book_id
-        ).first()
+            user_id=data['user_id'],
+            book_id=data['book_id']
+        ).exists()
         
         if existing_review:
             return Response(
@@ -56,18 +59,15 @@ def create_review(request):
                 status=status.HTTP_400_BAD_REQUEST
             )
         
-        # Create new review
-        serializer = ReviewSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        # Create the review
+        review = Review.objects.create(**data)
+        serializer = ReviewSerializer(review)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
         
     except Exception as e:
-        logger.error(f"Error creating review: {str(e)}")
         return Response(
-            {'error': 'Failed to create review'}, 
-            status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            {'error': str(e)}, 
+            status=status.HTTP_400_BAD_REQUEST
         )
 
 @api_view(['PUT'])
