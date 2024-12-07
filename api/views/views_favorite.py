@@ -43,7 +43,7 @@ def add_favorite(request):
         reading_status = request.data.get('reading_status', 'WANT_TO_READ')
 
         # Check if favorite already exists
-        favorite, created = FavoritePage.objects.get_or_create(
+        favorite, created = FavoritePages.objects.get_or_create(
             user_id=user_id,
             book_id=book_id,
             defaults={'reading_status': reading_status}
@@ -55,7 +55,7 @@ def add_favorite(request):
                 status=status.HTTP_400_BAD_REQUEST
             )
 
-        serializer = FavoritePageSerializer(favorite)
+        serializer = FavoritePagesSerializer(favorite)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
     except IntegrityError:
@@ -79,7 +79,7 @@ def update_reading_status(request):
         new_status = request.data.get('reading_status')
 
         favorite = get_object_or_404(
-            FavoritePage, 
+            FavoritePages, 
             user_id=user_id, 
             book_id=book_id
         )
@@ -87,7 +87,7 @@ def update_reading_status(request):
         favorite.reading_status = new_status
         favorite.save()
         
-        serializer = FavoritePageSerializer(favorite)
+        serializer = FavoritePagesSerializer(favorite)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     except Exception as e:
@@ -102,7 +102,7 @@ def remove_favorite(request, user_id, book_id):
     """Remove a book from favorites"""
     try:
         favorite = get_object_or_404(
-            FavoritePage, 
+            FavoritePages, 
             user_id=user_id, 
             book_id=book_id
         )
@@ -124,11 +124,11 @@ def remove_favorite(request, user_id, book_id):
 def get_reading_status_books(request, user_id, reading_status):
     """Get all books with a specific reading status"""
     try:
-        favorites = FavoritePage.objects.filter(
+        favorites = FavoritePages.objects.filter(
             user_id=user_id,
             reading_status=reading_status
         )
-        serializer = FavoritePageSerializer(favorites, many=True)
+        serializer = FavoritePagesSerializer(favorites, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     except Exception as e:
