@@ -142,8 +142,6 @@ def search_books(request):
     query = request.GET.get('q', '')
     try:
         books = Book.objects.filter(
-            Q(title__icontains=query) |
-            Q(author__icontains=query) |
             Q(genre__icontains=query)
         )
         serializer = BookSerializer(books, many=True)
