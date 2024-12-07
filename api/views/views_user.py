@@ -56,41 +56,46 @@ def get_all_users(request):
 
 @api_view(['POST'])
 def login(request):
-    """Handle user login"""
-    username = request.data.get('username')
-    password = request.data.get('password')
-    
-    if not username or not password:
-        return Response(
-            {'error': 'Username and password are required'}, 
-            status=status.HTTP_400_BAD_REQUEST
-        )
+    """Handle user login including Google OAuth"""
+    email = request.data.get('email')
     
     try:
-        user = get_object_or_404(User, username=username)
+        # Try to get existing user
+        user = User.objects.get(email=email)
         
-        # In production, use proper password hashing
-        if user.password == password:  # Replace with proper password verification
-            serializer = UserSerializer(user)
-            return Response({
-                'message': 'Login successful',
-                'user': {
-                    'user_id': user.user_id,
-                    'username': user.username,
-                    'is_librarian': user.is_librarian
-                }
-            }, status=status.HTTP_200_OK)
-        else:
-            return Response(
-                {'error': 'Invalid credentials'}, 
-                status=status.HTTP_401_UNAUTHORIZED
+        # Update profile image if provided (from Google)
+        if request.data.get('profile_image'):
+            user.profile_image = request.data.get('profile_image')
+            user.save()
+            
+    except User.DoesNotExist:
+        # Create new user for Google OAuth
+        try:
+            user = User.objects.create(
+                username=request.data.get('username'),
+                email=email,
+                password=request.data.get('password'),  # This will be the placeholder for Google users
+                profile_image=request.data.get('profile_image')
             )
-    except Exception as e:
-        logger.error(f"Login error: {str(e)}")
-        return Response(
-            {'error': 'Login failed'}, 
-            status=status.HTTP_401_UNAUTHORIZED
-        )
+        except Exception as e:
+            logger.error(f"Error creating user: {str(e)}")
+            return Response(
+                {'error': 'Failed to create user account'}, 
+                status=status.HTTP_400_BAD_REQUEST
+            )
+    
+    # Return user data
+    serializer = UserSerializer(user)
+    return Response({
+        'message': 'Login successful',
+        'user': {
+            'user_id': user.user_id,
+            'username': user.username,
+            'email': user.email,
+            'is_librarian': user.is_librarian,
+            'profile_image': user.profile_image
+        }
+    }, status=status.HTTP_200_OK)
 
 @api_view(['POST'])
 def logout(request):
