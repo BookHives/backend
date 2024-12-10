@@ -16,6 +16,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = [
     'bookhive-90e4e8826675.herokuapp.com',
+    "https://bookhive-frontend.herokuapp.com", 
     'localhost',
     '127.0.0.1'
 ]
@@ -54,7 +55,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'corsheaders.middleware.CorsMiddleware',  # Add this line
+    'corsheaders.middleware.CorsMiddleware', 
     'django.middleware.common.CommonMiddleware',
 
 ]
@@ -107,6 +108,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
+    "https://bookhive-frontend.herokuapp.com", 
     "https://bookhive-90e4e8826675.herokuapp.com"
 ]
 
@@ -133,3 +135,12 @@ CORS_ALLOW_HEADERS = [
 
 # Allow credentials
 CORS_ALLOW_CREDENTIALS = True
+
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.AllowAny',
+    ],
+    'DEFAULT_RENDERER_CLASSES': [
+        'rest_framework.renderers.JSONRenderer',
+    ],
+}
