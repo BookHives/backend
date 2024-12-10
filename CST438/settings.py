@@ -18,13 +18,15 @@ ALLOWED_HOSTS = [
     'bookhive-90e4e8826675.herokuapp.com',
     "https://bookhive-frontend-1d36e543d26f.herokuapp.com", 
     'localhost',
-    '127.0.0.1'
+    '127.0.0.1',
+    '10.0.2.2'
 ]
 
 CORS_ALLOWED_ORIGINS = [
     "https://bookhive-90e4e8826675.herokuapp.com",
     "http://localhost:3000", 
     "https://bookhive-frontend-1d36e543d26f.herokuapp.com/"
+    'http://10.0.2.2:3000'
 ]
 
 # Application definition
