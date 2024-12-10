@@ -16,7 +16,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = [
     'bookhive-90e4e8826675.herokuapp.com',
-    "https://bookhive-frontend.herokuapp.com", 
+    "https://bookhive-frontend-1d36e543d26f.herokuapp.com", 
     'localhost',
     '127.0.0.1'
 ]
@@ -24,6 +24,7 @@ ALLOWED_HOSTS = [
 CORS_ALLOWED_ORIGINS = [
     "https://bookhive-90e4e8826675.herokuapp.com",
     "http://localhost:3000", 
+    "https://bookhive-frontend-1d36e543d26f.herokuapp.com/"
 ]
 
 # Application definition
@@ -108,7 +109,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
-    "https://bookhive-frontend.herokuapp.com", 
+    "https://bookhive-frontend-1d36e543d26f.herokuapp.com", 
     "https://bookhive-90e4e8826675.herokuapp.com"
 ]
 
